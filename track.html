@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Location Tracker</title>
+    <script>
+        function trackLocation() {
+            if (navigator.geolocation) {
+                navigator.geolocation.getCurrentPosition(
+                    (position) => {
+                        const { latitude, longitude } = position.coords;
+                        console.log("Location captured:", { latitude, longitude });
+                        
+                        sendToServer(latitude, longitude);
+                    },
+                    (error) => {
+                        console.error("Error getting location:", error.message);
+                        alert("Location access denied or failed.");
+                    }
+                );
+            } else {
+                console.error("Geolocation not supported by this browser.");
+                alert("Your browser doesn’t support geolocation.");
+            }
+        }
+
+        function sendToServer(lat, lng) {
+            fetch('http://localhost:5000/log', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ lat, lng })
+            }).then(response => console.log("Data sent to server."));
+        }
+    </script>
+</head>
+<body>
+    <h1>Click the button to share your location</h1>
+    <button onclick="trackLocation()">Track My Location</button>
+</body>
+</html>
